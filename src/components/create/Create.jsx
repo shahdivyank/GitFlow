@@ -22,6 +22,8 @@ import {
 } from "unique-names-generator";
 import Protected from "../Protected";
 import { FaCopy, FaCheck } from "react-icons/fa";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 const Create = () => {
   const [copy, setCopy] = useState(false);
@@ -33,10 +35,11 @@ const Create = () => {
 
   const formSchema = z.object({
     workflow_name: z.string().min(2).max(50),
+    description: z.string().min(2).max(50),
     environment: z.string().min(2).max(50),
     type: z.string().min(2).max(50),
     tool: z.string().min(2).max(50),
-    package: z.string().min(2).max(50),
+    package_manager: z.string().min(2).max(50),
   });
 
   const form = useForm({
@@ -46,11 +49,25 @@ const Create = () => {
     },
   });
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const createWorkflow = useMutation(api.workflows.create);
+
+  const onSubmit = async ({
+    workflow_name,
+    description,
+    environment,
+    type,
+    tool,
+    package_manager,
+  }) => {
+    await createWorkflow({
+      name: workflow_name,
+      description,
+      environment,
+      type,
+      tool,
+      package_manager,
+    });
+  };
 
   const handleCopy = () => {
     console.log("copied");
@@ -65,7 +82,7 @@ const Create = () => {
           Create a New Workflow
         </p>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="workflow_name"
@@ -78,6 +95,20 @@ const Create = () => {
                   <FormDescription>
                     This is how you can reference your workflow in the future.
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Check formatting" />
+                  </FormControl>
+                  <FormDescription>What does this workflow do?</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -101,7 +132,7 @@ const Create = () => {
             />
             <FormField
               control={form.control}
-              name="package"
+              name="package_manager"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Package Manager</FormLabel>
