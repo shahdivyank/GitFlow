@@ -21,8 +21,10 @@ import {
   animals,
 } from "unique-names-generator";
 import Protected from "../Protected";
+import { FaCopy, FaCheck } from "react-icons/fa";
 
 const Create = () => {
+  const [copy, setCopy] = useState(false);
   const randomName = uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals],
     separator: " ",
@@ -49,6 +51,12 @@ const Create = () => {
     // ✅ This will be type-safe and validated.
     console.log(values);
   }
+
+  const handleCopy = () => {
+    console.log("copied");
+    setCopy(true);
+    setTimeout(() => setCopy(false), 2000);
+  };
 
   return (
     <Protected>
@@ -147,6 +155,26 @@ const Create = () => {
             <Button type="submit">Submit</Button>
           </form>
         </Form>
+      </div>
+
+      <div className="w-1/2 m-8 bg-slate-800 rounded p-8">
+        <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
+          {copy ? (
+            <FaCheck className="text-green-500" />
+          ) : (
+            <FaCopy onClick={handleCopy} />
+          )}
+        </div>
+
+        <code>
+          name: Format Check on: [push] jobs: check-format: runs-on:
+          ubuntu-latest steps: - name: Checkout code uses: actions/checkout@v2 -
+          name: Install dependencies run: | python -m pip install --upgrade pip
+          pip install eslint - name: Run ESLint format check run: | eslint
+          --cache --fix --ext .py,.pyx,.pxd . - name: Report formatting issues
+          if: status.code == 1 run: | echo "Formatting issues found. Please run
+          'eslint --cache --fix --ext .py,.pyx,.pxd .' to fix them." exit 1
+        </code>
       </div>
     </Protected>
   );
