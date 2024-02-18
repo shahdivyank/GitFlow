@@ -3,6 +3,10 @@ import { togetherClient, TogetherChatModel } from "together-ai-sdk";
 export const POST = async (req) => {
   const { environment, type, tool, package_manager } = await req.json();
 
+  if (!environment || !type || !tool || !package_manager) {
+    return Response.json({}, { status: 400 });
+  }
+
   const client = togetherClient({ apiKey: process.env.TOGETHER_AI_API_KEY });
 
   const result = await client.chat({
@@ -18,5 +22,5 @@ export const POST = async (req) => {
 
   const code = content.substring(start + 5, end);
 
-  return Response.json(code);
+  return Response.json(code, { status: 200 });
 };

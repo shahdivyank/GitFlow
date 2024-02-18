@@ -31,5 +31,5 @@ export const GET = async () => {
     }
   }
 
-  return Response.json(output);
+  return Response.json(output, { status: 200 });
 };
