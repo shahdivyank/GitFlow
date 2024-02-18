@@ -23,6 +23,7 @@ import { CustomAPI } from "@/lib/api";
 const Create = () => {
   const [copy, setCopy] = useState(false);
   const [code, setCode] = useState("");
+  const [data, setData] = useState({});
 
   const formSchema = z.object({
     workflow_name: z.string().min(2).max(50),
@@ -50,23 +51,30 @@ const Create = () => {
     tool,
     package_manager,
   }) => {
-    await createWorkflow({
-      name: workflow_name,
+    const code = await CustomAPI({
+      url: "/api/togetherai",
+      method: "POST",
+    });
+
+    setData({
+      workflow_name,
       description,
       environment,
       type,
       tool,
       package_manager,
+      code,
     });
+  };
 
-    CustomAPI({
-      url: "/api/togetherai",
-      method: "POST",
-    }).then((code) => setCode(code));
+  const onCreate = async () => {
+    await createWorkflow({
+      ...data,
+    });
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(code);
+    navigator.clipboard.writeText(data.code);
     setCopy(true);
     setTimeout(() => setCopy(false), 2000);
   };
@@ -74,7 +82,7 @@ const Create = () => {
   return (
     <Protected>
       <div className="mx-8">
-        <p className="text-3xl font-semibold my-3 text-center">
+        <p className="text-3xl font-semibold my-1 text-center">
           Create a New Workflow
         </p>
         <Form {...form}>
@@ -89,10 +97,8 @@ const Create = () => {
                     <Input {...field} placeholder="Workflow Name" />
                   </FormControl>
                   <FormDescription>
-                    This is how you can reference your workflow in the future.
                     You cannot change this name later on!
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -106,7 +112,6 @@ const Create = () => {
                     <Input {...field} placeholder="Check formatting" />
                   </FormControl>
                   <FormDescription>What does this workflow do?</FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -123,7 +128,6 @@ const Create = () => {
                   <FormDescription>
                     This is the environment in which your application runs.
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -140,7 +144,6 @@ const Create = () => {
                     This is the package manager utilized (ie. Bun, Yarn, NPM,
                     Poetry)
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -158,7 +161,6 @@ const Create = () => {
                     This is the desired type of CI you would like to include
                     (ie. linting, formatting, testing)
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -175,32 +177,37 @@ const Create = () => {
                     This is the desired tool to run the given type of continous
                     integration.
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit">Submit</Button>
+            <Button type="submit" variant="secondary">
+              Generate
+            </Button>
           </form>
         </Form>
       </div>
+      <div className="w-1/2 m-8 flex flex-col items-end justify-end">
+        <div className="w-full h-[90%] bg-slate-800 rounded p-8">
+          <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
+            {copy ? (
+              <FaCheck className="text-green-500" />
+            ) : (
+              <FaCopy onClick={handleCopy} />
+            )}
+          </div>
 
-      <div className="w-1/2 m-8 bg-slate-800 rounded p-8">
-        <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
-          {copy ? (
-            <FaCheck className="text-green-500" />
-          ) : (
-            <FaCopy onClick={handleCopy} />
-          )}
+          <code className="whitespace-pre-wrap">
+            <p className="text-slate-500">
+              .github/workflows/
+              {form.getValues().workflow_name.split(" ").join("_")}.yaml
+            </p>
+            {data.code === "" ? "No Code Generated Just Yet!" : data.code}
+          </code>
         </div>
-
-        <code className="whitespace-pre-wrap">
-          <p className="text-slate-500">
-            .github/workflows/
-            {form.getValues().workflow_name.split(" ").join("_")}.yaml
-          </p>
-          {code === "" ? "No Code Generated Just Yet!" : code}
-        </code>
+        <Button type="submit" className="my-2" onClick={onCreate}>
+          Create Workflow
+        </Button>
       </div>
     </Protected>
   );

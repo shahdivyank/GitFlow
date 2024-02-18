@@ -10,21 +10,23 @@ export const get = query({
 
 export const create = mutation({
   args: {
-    name: v.string(),
+    workflow_name: v.string(),
     description: v.string(),
     environment: v.string(),
     package_manager: v.string(),
     type: v.string(),
     tool: v.string(),
+    code: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("workflows", {
-      name: args.name,
+      name: args.workflow_name,
       description: args.description,
       environment: args.environment,
       package_manager: args.package_manager,
       type: args.type,
       tool: args.tool,
+      code: args.code,
     });
   },
 });
