@@ -26,7 +26,9 @@ import { toast } from "../ui/use-toast";
 
 const Create = () => {
   const [copy, setCopy] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    code: "",
+  });
 
   const router = useRouter();
 
@@ -56,11 +58,6 @@ const Create = () => {
     tool,
     package_manager,
   }) => {
-    const code = await CustomAPI({
-      url: "/api/togetherai",
-      method: "POST",
-    });
-
     setData({
       workflow_name,
       description,
@@ -68,6 +65,16 @@ const Create = () => {
       type,
       tool,
       package_manager,
+      code: "Generating...",
+    });
+
+    const code = await CustomAPI({
+      url: "/api/togetherai",
+      method: "POST",
+    });
+
+    setData({
+      ...data,
       code,
     });
   };
