@@ -15,6 +15,7 @@ export const GET = async () => {
         stargazers_count,
         archived,
         default_branch,
+        clone_url,
       } = repository;
 
       output.push({
@@ -25,6 +26,7 @@ export const GET = async () => {
         stargazers_count,
         archived,
         default_branch,
+        clone_url,
       });
     }
   }

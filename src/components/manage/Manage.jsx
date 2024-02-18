@@ -11,9 +11,22 @@ import { api } from "../../../convex/_generated/api";
 import { IoMdShare } from "react-icons/io";
 import { toast } from "../ui/use-toast";
 import { Badge } from "../ui/badge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { CustomAPI } from "@/lib/api";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import Tile from "./Tile";
 
-const Share = ({ params }) => {
+const Manage = ({ params }) => {
+  const [repos, setRepos] = useState(null);
+
+  useEffect(() => {
+    CustomAPI({
+      url: "/api/repos",
+      method: "GET",
+    }).then((repos) => setRepos(repos));
+  }, []);
+
   const { id } = params;
   const workflow = useQuery(api.workflows.getWorkflow, {
     id,
@@ -66,8 +79,17 @@ const Share = ({ params }) => {
           </CardFooter>
         </Card>
       </div>
+      <div className="grid grid-cols-2 gap-8">
+        {repos &&
+          repos.map((repo) => <Tile repo={repo} name={name} code={code} />)}
+        {!repos && (
+          <p className="flex items-center justify-center w-full text-4xl">
+            Loading...
+          </p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default Share;
+export default Manage;

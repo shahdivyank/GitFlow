@@ -1,46 +1,44 @@
 import app from "@/lib/app";
-import { exec, execSync } from "child_process";
+import { execSync } from "child_process";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
-export const GET = async () => {
-  const filename = "random words are cool".split(" ").join("_");
-  const branch = "main";
+export const POST = async (req) => {
+  const { branch, repo, clone_url, code, workflow } = await req.json();
+  const uuid = uuidv4().slice(0, 5);
+
+  const name = workflow.split(" ").join("_");
 
   const { data: installation } = await app.octokit.request(
-    `GET /repos/TreeHacks-Pipeline-Automation/testing-js/installation`
+    `GET /repos/TreeHacks-Pipeline-Automation/${repo}/installation`
   );
 
   const octokit = await app.getInstallationOctokit(installation.id);
 
-  execSync(
-    `mkdir files && cd files && git clone https://github.com/TreeHacks-Pipeline-Automation/testing-js.git`
-  );
+  execSync(`mkdir files && cd files && git clone ${clone_url}`);
 
   execSync(
-    `cd files/testing-js && mkdir .github && cd .github && mkdir workflows && cd workflows`
+    `cd files/${repo} && mkdir .github && cd .github && mkdir workflows && cd workflows`
   );
 
-  execSync(`cd files/testing-js/.github/workflows && touch ${filename}.yaml`);
+  execSync(`cd files/${repo}/.github/workflows && touch ${name}.yaml`);
 
-  fs.writeFileSync(
-    `files/testing-js/.github/workflows/${filename}.yaml`,
-    "this is testing that everything is working properly"
-  );
+  fs.writeFileSync(`files/${repo}/.github/workflows/${name}.yaml`, code);
 
   execSync(
-    `cd files/testing-js && git add . && git commit -m "added new workflow" && git checkout -b ciui/new_workflow && git push origin ciui/new_workflow`
+    `cd files/${repo} && git add . && git commit -m "Added ${name} to ${repo}" && git checkout -b ciui/${name}_${uuid} && git push origin ciui/${name}_${uuid}`
   );
 
   execSync(`rm -rf files/`);
 
   await octokit.rest.pulls.create({
-    title: "New workflow added by uici",
+    title: `AUTOMATION: ${name} added into ${repo}`,
     body: "This is a newly generated workflow to help with formatting using Prettier",
     owner: "TreeHacks-Pipeline-Automation",
-    repo: "testing-js",
-    head: "ciui/new_workflow",
-    base: "main",
+    repo: repo,
+    head: `ciui/${name}_${uuid}`,
+    base: branch,
   });
 
-  return Response.json("hello world");
+  return Response.json("ok");
 };
