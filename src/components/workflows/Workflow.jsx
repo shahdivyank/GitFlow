@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FaCode, FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import {
   Dialog,
@@ -24,6 +24,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
+import { CustomAPI } from "@/lib/api";
 
 const Workflow = ({
   _id,
@@ -45,8 +46,15 @@ const Workflow = ({
       id: _id,
     });
 
-    await deleteInstalls({
+    const items = await deleteInstalls({
       name,
+    });
+
+    items.forEach(async ({ repo, workflow, number }) => {
+      await CustomAPI({
+        url: `/api/pull-requests?repo=${repo}&workflow=${workflow}&number=${number}`,
+        method: "DELETE",
+      });
     });
 
     toast({

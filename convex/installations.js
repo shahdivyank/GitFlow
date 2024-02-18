@@ -49,7 +49,11 @@ export const deleteInstalls = mutation({
       .filter((q) => q.eq(q.field("workflow"), name))
       .collect();
 
+    const copy = items;
+
     items.forEach(async ({ _id }) => await db.delete(_id));
+
+    return copy;
   },
 });
 
