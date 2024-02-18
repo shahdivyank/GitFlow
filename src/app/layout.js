@@ -1,9 +1,9 @@
-import { Inter } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "@/components/Convex";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ["latin"] });
+const notosans = Noto_Sans_JP({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Create Next App",
@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={notosans.className}>
         <ConvexClientProvider>
           {children} <Toaster />
         </ConvexClientProvider>

@@ -70,8 +70,6 @@ export const DELETE = async (req) => {
 
     const clone_url = url.substring(0, url.indexOf("/pull"));
 
-    console.log("WHERE AM I", clone_url, url);
-
     execSync(`mkdir files && cd files && git clone ${clone_url}`);
 
     execSync(`cd files/${repo} && cd .github/workflows`);
