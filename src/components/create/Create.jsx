@@ -71,6 +71,12 @@ const Create = () => {
     const code = await CustomAPI({
       url: "/api/togetherai",
       method: "POST",
+      body: {
+        environment,
+        type,
+        tool,
+        package_manager,
+      },
     });
 
     setData({
