@@ -19,11 +19,14 @@ import { FaCopy, FaCheck } from "react-icons/fa";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { CustomAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 const Create = () => {
   const [copy, setCopy] = useState(false);
-  const [code, setCode] = useState("");
   const [data, setData] = useState({});
+
+  const router = useRouter();
 
   const formSchema = z.object({
     workflow_name: z.string().min(2).max(50),
@@ -71,6 +74,11 @@ const Create = () => {
     await createWorkflow({
       ...data,
     });
+    toast({
+      title: "Created Workflow!",
+      description: `${data.workflow_name} is Available for Use`,
+    });
+    router.push("/workflows");
   };
 
   const handleCopy = () => {
