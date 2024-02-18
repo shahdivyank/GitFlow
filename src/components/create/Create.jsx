@@ -24,9 +24,11 @@ import Protected from "../Protected";
 import { FaCopy, FaCheck } from "react-icons/fa";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { CustomAPI } from "@/lib/api";
 
 const Create = () => {
   const [copy, setCopy] = useState(false);
+  const [code, setCode] = useState("");
   const randomName = uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals],
     separator: " ",
@@ -67,6 +69,11 @@ const Create = () => {
       tool,
       package_manager,
     });
+
+    CustomAPI({
+      url: "/api/togetherai",
+      method: "POST",
+    }).then((code) => setCode(code));
   };
 
   const handleCopy = () => {
@@ -198,14 +205,12 @@ const Create = () => {
           )}
         </div>
 
-        <code>
-          name: Format Check on: [push] jobs: check-format: runs-on:
-          ubuntu-latest steps: - name: Checkout code uses: actions/checkout@v2 -
-          name: Install dependencies run: | python -m pip install --upgrade pip
-          pip install eslint - name: Run ESLint format check run: | eslint
-          --cache --fix --ext .py,.pyx,.pxd . - name: Report formatting issues
-          if: status.code == 1 run: | echo "Formatting issues found. Please run
-          'eslint --cache --fix --ext .py,.pyx,.pxd .' to fix them." exit 1
+        <code className="whitespace-pre-wrap">
+          <p className="text-slate-500">
+            .github/workflows/
+            {form.getValues().workflow_name.split(" ").join("_")}.yaml
+          </p>
+          {code}
         </code>
       </div>
     </Protected>
