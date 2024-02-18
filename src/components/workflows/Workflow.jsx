@@ -74,7 +74,9 @@ const Workflow = ({
       title: "Copied to Clipboard",
       description: `${name} is copied and now shareable!`,
     });
-    navigator.clipboard.writeText(`localhost:3000/share/${_id}`);
+    navigator.clipboard.writeText(
+      `${process.env.NEXT_PUBLIC_URL}/share/${_id}`
+    );
   };
 
   return (
