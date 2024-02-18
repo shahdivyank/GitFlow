@@ -19,6 +19,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 const icons = {
   public: <MdOutlinePublic className="text-xl mx-2" />,
@@ -34,8 +36,11 @@ const Repo = ({
   visibility,
   stargazers_count,
   description,
-  workflows = [],
 }) => {
+  const workflows = useQuery(api.installations.getRepos, {
+    repo: name,
+  });
+
   return (
     <Card className="flex flex-col justify-between">
       <CardHeader>
@@ -52,11 +57,10 @@ const Repo = ({
         <span className="font-bold text-lg">{default_branch}</span>
       </CardContent>
       <CardFooter className="flex justify-between">
-        {workflows.map((workflow) => (
-          <Badge>{workflow}</Badge>
-        ))}
+        {workflows &&
+          workflows.map(({ workflow }) => <Badge>{workflow}</Badge>)}
 
-        {workflows.length === 0 && (
+        {workflows?.length === 0 && (
           <Badge variant="outline">No Installed Workflows</Badge>
         )}
 

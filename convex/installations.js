@@ -52,3 +52,13 @@ export const deleteInstalls = mutation({
     items.forEach(async ({ _id }) => await db.delete(_id));
   },
 });
+
+export const getRepos = query({
+  args: { repo: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("installations")
+      .filter((q) => q.eq(q.field("repo"), args.repo))
+      .collect();
+  },
+});
