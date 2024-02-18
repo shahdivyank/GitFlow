@@ -9,6 +9,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import { ToastAction } from "@/components/ui/toast";
 import {
   Card,
   CardDescription,
@@ -22,8 +23,9 @@ import { CustomAPI } from "@/lib/api";
 import { IoReload } from "react-icons/io5";
 import { MdLock, MdOutlinePublic } from "react-icons/md";
 import { toast } from "../ui/use-toast";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import Link from "next/link";
 
 const Tile = ({ repo, name, code }) => {
   const workflows = useQuery(api.installations.getInstallations, {
@@ -31,12 +33,14 @@ const Tile = ({ repo, name, code }) => {
     workflow: name,
   });
 
+  const install = useMutation(api.installations.install);
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleInstall = async (repo, default_branch, clone_url, code, name) => {
     setLoading(true);
-    await CustomAPI({
+    const { number, head, url } = await CustomAPI({
       url: "/api/pull-requests",
       method: "POST",
       body: {
@@ -48,9 +52,24 @@ const Tile = ({ repo, name, code }) => {
       },
     });
 
+    await install({
+      number,
+      head,
+      url,
+      repo,
+      workflow: name,
+    });
+
     toast({
       title: "Successfully Installed Workflow",
-      description: `Please visit ${clone_url} to merge the PR`,
+      description: `Please visit the created PR to merge`,
+      action: (
+        <ToastAction altText="Visit URL">
+          <Link href={url} target="_blank">
+            Visit PR
+          </Link>
+        </ToastAction>
+      ),
     });
 
     setLoading(false);
@@ -74,8 +93,9 @@ const Tile = ({ repo, name, code }) => {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger disabled={repo.visibility === "private" || workflows}>
             <Button disabled={repo.visibility === "private" || workflows}>
-              {!workflows && "Must be Public Repo"}
+              {repo.visibility === "private" && "Must be Public Repo"}
               {workflows && "Already Installed"}
+              {repo.visibility === "public" && !workflows && "Install Workflow"}
             </Button>
           </DialogTrigger>
           <DialogContent>

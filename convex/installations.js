@@ -25,3 +25,30 @@ export const getCounts = query({
       .collect();
   },
 });
+
+export const install = mutation({
+  args: {
+    repo: v.string(),
+    workflow: v.string(),
+    number: v.number(),
+    url: v.string(),
+    head: v.string(),
+  },
+  handler: async ({ db }, { repo, workflow, number, url, head }) => {
+    await db.insert("installations", { repo, workflow, number, url, head });
+  },
+});
+
+export const deleteInstalls = mutation({
+  args: {
+    name: v.string(),
+  },
+  handler: async ({ db }, { name }) => {
+    const items = await db
+      .query("installations")
+      .filter((q) => q.eq(q.field("workflow"), name))
+      .collect();
+
+    items.forEach(async ({ _id }) => await db.delete(_id));
+  },
+});

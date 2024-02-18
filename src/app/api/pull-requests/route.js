@@ -31,7 +31,7 @@ export const POST = async (req) => {
 
   execSync(`rm -rf files/`);
 
-  await octokit.rest.pulls.create({
+  const { data } = await octokit.rest.pulls.create({
     title: `AUTOMATION: ${name} added into ${repo}`,
     body: `AUTOMATION WORKFLOW: ${name}`,
     owner: "TreeHacks-Pipeline-Automation",
@@ -40,5 +40,9 @@ export const POST = async (req) => {
     base: branch,
   });
 
-  return Response.json("ok");
+  return Response.json({
+    number: data.number,
+    head: data.head.ref,
+    url: data.html_url,
+  });
 };

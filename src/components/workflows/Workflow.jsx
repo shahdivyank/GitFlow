@@ -35,6 +35,7 @@ const Workflow = ({
   type,
 }) => {
   const deleteWorkflow = useMutation(api.workflows.deleteWorkflow);
+  const deleteInstalls = useMutation(api.installations.deleteInstalls);
   const installs = useQuery(api.installations.getCounts, {
     name,
   });
@@ -43,6 +44,11 @@ const Workflow = ({
     await deleteWorkflow({
       id: _id,
     });
+
+    await deleteInstalls({
+      name,
+    });
+
     toast({
       title: "Deleted",
       variant: "destructive",
