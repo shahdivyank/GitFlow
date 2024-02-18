@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
@@ -28,7 +28,6 @@ import Link from "next/link";
 const Workflow = ({
   _id,
   name,
-  count = 10,
   description,
   environment,
   package_manager,
@@ -36,6 +35,9 @@ const Workflow = ({
   type,
 }) => {
   const deleteWorkflow = useMutation(api.workflows.deleteWorkflow);
+  const count = useQuery(api.installations.getCounts, {
+    name,
+  });
 
   const handleDelete = async () => {
     await deleteWorkflow({
@@ -90,7 +92,7 @@ const Workflow = ({
       <CardFooter className="flex justify-between">
         <CardDescription className="flex items-center">
           Used by <span className="font-semibold mx-2 text-lg">{count}</span>
-          repositories
+          {count === 1 ? "repository" : "repositories"}
         </CardDescription>
 
         <Dialog open={open} onOpenChange={setOpen}>

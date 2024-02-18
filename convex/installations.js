@@ -15,3 +15,15 @@ export const getInstallations = query({
       .first();
   },
 });
+
+export const getCounts = query({
+  args: { name: v.string() },
+  handler: async (ctx, args) => {
+    return (
+      await ctx.db
+        .query("installations")
+        .filter((q) => q.eq(q.field("workflow"), args.name))
+        .collect()
+    ).length;
+  },
+});
