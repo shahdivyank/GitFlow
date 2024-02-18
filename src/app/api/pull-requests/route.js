@@ -33,7 +33,7 @@ export const POST = async (req) => {
 
   await octokit.rest.pulls.create({
     title: `AUTOMATION: ${name} added into ${repo}`,
-    body: "This is a newly generated workflow to help with formatting using Prettier",
+    body: `AUTOMATION WORKFLOW: ${name}`,
     owner: "TreeHacks-Pipeline-Automation",
     repo: repo,
     head: `ciui/${name}_${uuid}`,

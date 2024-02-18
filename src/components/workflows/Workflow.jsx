@@ -35,7 +35,7 @@ const Workflow = ({
   type,
 }) => {
   const deleteWorkflow = useMutation(api.workflows.deleteWorkflow);
-  const count = useQuery(api.installations.getCounts, {
+  const installs = useQuery(api.installations.getCounts, {
     name,
   });
 
@@ -91,8 +91,9 @@ const Workflow = ({
       </CardFooter>
       <CardFooter className="flex justify-between">
         <CardDescription className="flex items-center">
-          Used by <span className="font-semibold mx-2 text-lg">{count}</span>
-          {count === 1 ? "repository" : "repositories"}
+          Used by{" "}
+          <span className="font-semibold mx-2 text-lg">{installs?.length}</span>
+          {installs?.length === 1 ? "repository" : "repositories"}
         </CardDescription>
 
         <Dialog open={open} onOpenChange={setOpen}>
