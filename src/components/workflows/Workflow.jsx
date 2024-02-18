@@ -23,6 +23,7 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 const Workflow = ({
   _id,
@@ -57,14 +58,20 @@ const Workflow = ({
       title: "Copied to Clipboard",
       description: `${name} is copied and now shareable!`,
     });
-    navigator.clipboard.writeText(`localhost:3000/view/${_id}`);
+    navigator.clipboard.writeText(`localhost:3000/share/${_id}`);
   };
 
   return (
     <Card className="flex flex-col justify-between">
       <CardHeader>
         <CardTitle className="flex justify-between">
-          {name}
+          <Link
+            target="_blank"
+            href={`/share/${_id}`}
+            className="hover:underline"
+          >
+            {name}
+          </Link>
           <IoMdShare
             className="hover:cursor-pointer hover:opacity-75"
             onClick={handleSelect}

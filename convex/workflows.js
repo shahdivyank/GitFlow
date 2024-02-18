@@ -35,3 +35,14 @@ export const deleteWorkflow = mutation({
     await ctx.db.delete(args.id);
   },
 });
+
+export const getWorkflow = query({
+  args: { id: v.string() },
+  handler: async (ctx, args) => {
+    try {
+      return await ctx.db.get(args.id);
+    } catch (err) {
+      return null;
+    }
+  },
+});

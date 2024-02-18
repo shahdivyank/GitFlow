@@ -31,7 +31,7 @@ export const GET = async () => {
     `cd files/testing-js && git add . && git commit -m "added new workflow" && git checkout -b ciui/new_workflow && git push origin ciui/new_workflow`
   );
 
-  execSync(`rm -rf files`);
+  execSync(`rm -rf files/`);
 
   await octokit.rest.pulls.create({
     title: "New workflow added by uici",

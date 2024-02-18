@@ -14,12 +14,6 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  uniqueNamesGenerator,
-  adjectives,
-  colors,
-  animals,
-} from "unique-names-generator";
 import Protected from "../Protected";
 import { FaCopy, FaCheck } from "react-icons/fa";
 import { useMutation } from "convex/react";
@@ -29,11 +23,6 @@ import { CustomAPI } from "@/lib/api";
 const Create = () => {
   const [copy, setCopy] = useState(false);
   const [code, setCode] = useState("");
-  const randomName = uniqueNamesGenerator({
-    dictionaries: [adjectives, colors, animals],
-    separator: " ",
-    length: 3,
-  });
 
   const formSchema = z.object({
     workflow_name: z.string().min(2).max(50),
@@ -47,7 +36,7 @@ const Create = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      workflow_name: randomName,
+      workflow_name: "",
     },
   });
 
@@ -77,7 +66,7 @@ const Create = () => {
   };
 
   const handleCopy = () => {
-    console.log("copied");
+    navigator.clipboard.writeText(code);
     setCopy(true);
     setTimeout(() => setCopy(false), 2000);
   };
@@ -97,7 +86,7 @@ const Create = () => {
                 <FormItem>
                   <FormLabel>Workflow Name</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} placeholder="Workflow Name" />
                   </FormControl>
                   <FormDescription>
                     This is how you can reference your workflow in the future.
@@ -210,7 +199,7 @@ const Create = () => {
             .github/workflows/
             {form.getValues().workflow_name.split(" ").join("_")}.yaml
           </p>
-          {code}
+          {code === "" ? "No Code Generated Just Yet!" : code}
         </code>
       </div>
     </Protected>

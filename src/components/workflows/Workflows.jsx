@@ -9,8 +9,6 @@ import Link from "next/link";
 const Workflows = () => {
   const workflows = useQuery(api.workflows.get);
 
-  console.log(workflows);
-
   return (
     <Protected>
       {!workflows && (
