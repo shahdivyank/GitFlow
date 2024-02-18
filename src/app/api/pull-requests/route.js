@@ -25,29 +25,18 @@ export const POST = async (req) => {
 
   fs.writeFileSync(`files/${repo}/.github/workflows/${name}.yaml`, code);
 
-  execSync(`cd files/${repo}`);
-  const output = execSync("ls").toString();
-  console.log("AFTER CD AND BEFORE GIT", output);
-
   execSync(
-    `git add . && git commit -m "Added ${name} to ${repo}" && git checkout -b ciui/${name}_${uuid} && git push origin ciui/${name}_${uuid}`
+    `cd files/${repo} && git add . && git commit -m "Added ${name} to ${repo}" && git checkout -b gitflow/${name}_${uuid} && git push origin gitflow/${name}_${uuid}`
   );
-
-  const wee = execSync("ls").toString();
-  console.log("AFTER GIT", wee);
-
-  // execSync(
-  //   `cd files/${repo} && git add . && git commit -m "Added ${name} to ${repo}" && git checkout -b ciui/${name}_${uuid} && git push origin ciui/${name}_${uuid}`
-  // );
 
   execSync(`rm -rf files/`);
 
   const { data } = await octokit.rest.pulls.create({
-    title: `AUTOMATION: ${name} added into ${repo}`,
-    body: `AUTOMATION WORKFLOW: ${name}`,
+    title: `AUTOMATION: ${name} ADDED`,
+    body: `AUTOMATION WORKFLOW: ${name} is being added into this repository.`,
     owner: "TreeHacks-Pipeline-Automation",
     repo: repo,
-    head: `ciui/${name}_${uuid}`,
+    head: `gitflow/${name}_${uuid}`,
     base: branch,
   });
 
@@ -62,22 +51,58 @@ export const DELETE = async (req) => {
   const number = req.nextUrl.searchParams.get("number");
   const workflow = req.nextUrl.searchParams.get("workflow");
   const repo = req.nextUrl.searchParams.get("repo");
+  const url = req.nextUrl.searchParams.get("url");
+  const branch = req.nextUrl.searchParams.get("branch");
+  const uuid = uuidv4().slice(0, 5);
 
   const { data: installation } = await app.octokit.request(
     `GET /repos/TreeHacks-Pipeline-Automation/${repo}/installation`
   );
 
-  console.log(number, repo, workflow);
-
   const octokit = await app.getInstallationOctokit(installation.id);
 
-  const { data } = await octokit.rest.pulls.checkIfMerged({
-    owner: "TreeHacks-Pipeline-Automation",
-    repo: repo,
-    pull_number: number - 1,
-  });
+  try {
+    await octokit.rest.pulls.checkIfMerged({
+      owner: "TreeHacks-Pipeline-Automation",
+      repo: repo,
+      pull_number: number,
+    });
 
-  console.log(data);
+    const clone_url = url.substring(0, url.indexOf("/pull"));
 
-  return Response("ok");
+    console.log("WHERE AM I", clone_url, url);
+
+    execSync(`mkdir files && cd files && git clone ${clone_url}`);
+
+    execSync(`cd files/${repo} && cd .github/workflows`);
+
+    execSync(`cd files/${repo}/.github/workflows && rm ${workflow}.yaml`);
+
+    execSync(
+      `cd files/${repo} && git add . && git commit -m "Remove ${workflow}" && git checkout -b gitflow/${workflow}_${uuid} && git push origin gitflow/${workflow}_${uuid}`
+    );
+
+    execSync(`rm -rf files/`);
+
+    await octokit.rest.pulls.create({
+      title: `AUTOMATION: ${workflow} REMOVED`,
+      body: `AUTOMATION WORKFLOW: ${workflow} is being removed from this repository.`,
+      owner: "TreeHacks-Pipeline-Automation",
+      repo: repo,
+      head: `gitflow/${workflow}_${uuid}`,
+      base: branch,
+    });
+
+    return Response.json(true);
+  } catch (err) {
+    octokit.rest.pulls.update({
+      owner: "TreeHacks-Pipeline-Automation",
+      repo: repo,
+      pull_number: number,
+      state: "closed",
+      body: `AUTOMATION WORKFLOW: ${workflow} is being closed due to a workflow deletion from GitFlow.`,
+    });
+
+    return Response.json(false);
+  }
 };

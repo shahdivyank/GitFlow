@@ -17,6 +17,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Tile from "./Tile";
 import { FaCheck, FaCopy } from "react-icons/fa";
+import Protected from "../Protected";
 
 const Manage = ({ params }) => {
   const [repos, setRepos] = useState(null);
@@ -64,58 +65,60 @@ const Manage = ({ params }) => {
   };
 
   return (
-    <div className="flex p-8">
-      <div className="w-1/2 flex flex-col gap-4 items-start justify-start h-screen">
-        <Card className="flex flex-col justify-between w-fit border-0">
-          <CardHeader>
-            <CardTitle className="flex justify-between">
-              {name}
-              <IoMdShare
-                className="hover:cursor-pointer hover:opacity-75 mx-2"
-                onClick={handleSelect}
-              />
-            </CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </CardHeader>
-          <CardFooter className="flex justify-between">
-            <div>
-              <Badge variant="outline">{environment}</Badge>
-              <Badge variant="outline">{package_manager}</Badge>
-              <Badge variant="outline">{type}</Badge>
-              <Badge variant="outline">{tool}</Badge>
+    <Protected>
+      <div className="flex p-8">
+        <div className="w-1/2 flex flex-col gap-4 items-start justify-start h-screen">
+          <Card className="flex flex-col justify-between w-fit border-0">
+            <CardHeader>
+              <CardTitle className="flex justify-between">
+                {name}
+                <IoMdShare
+                  className="hover:cursor-pointer hover:opacity-75 mx-2"
+                  onClick={handleSelect}
+                />
+              </CardTitle>
+              <CardDescription>{description}</CardDescription>
+            </CardHeader>
+            <CardFooter className="flex justify-between">
+              <div>
+                <Badge variant="outline">{environment}</Badge>
+                <Badge variant="outline">{package_manager}</Badge>
+                <Badge variant="outline">{type}</Badge>
+                <Badge variant="outline">{tool}</Badge>
+              </div>
+            </CardFooter>
+          </Card>
+          <div className="w-full bg-slate-800 rounded p-8">
+            <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
+              {copy ? (
+                <FaCheck className="text-green-500" />
+              ) : (
+                <FaCopy onClick={handleCopy} />
+              )}
             </div>
-          </CardFooter>
-        </Card>
-        <div className="w-full bg-slate-800 rounded p-8">
-          <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
-            {copy ? (
-              <FaCheck className="text-green-500" />
-            ) : (
-              <FaCopy onClick={handleCopy} />
-            )}
-          </div>
 
-          <code className="whitespace-pre-wrap">
-            <p className="text-slate-500">
-              .github/workflows/
-              {name.split(" ").join("_")}.yaml
+            <code className="whitespace-pre-wrap">
+              <p className="text-slate-500">
+                .github/workflows/
+                {name.split(" ").join("_")}.yaml
+              </p>
+              {code}
+            </code>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8 p-8">
+          {repos &&
+            repos.map((repo, index) => (
+              <Tile repo={repo} name={name} code={code} key={index} />
+            ))}
+          {!repos && (
+            <p className="flex items-center justify-center w-full text-4xl">
+              Loading...
             </p>
-            {code}
-          </code>
+          )}
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-8 p-8">
-        {repos &&
-          repos.map((repo, index) => (
-            <Tile repo={repo} name={name} code={code} key={index} />
-          ))}
-        {!repos && (
-          <p className="flex items-center justify-center w-full text-4xl">
-            Loading...
-          </p>
-        )}
-      </div>
-    </div>
+    </Protected>
   );
 };
 
