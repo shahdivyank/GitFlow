@@ -5,6 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 
 export const POST = async (req) => {
   const { branch, repo, clone_url, code, workflow } = await req.json();
+
+  if (!branch || !repo || !clone_url || !code || !workflow) {
+    return Response.json({}, { status: 400 });
+  }
+
   const uuid = uuidv4().slice(0, 5);
 
   const name = workflow.split(" ").join("_");
@@ -40,11 +45,14 @@ export const POST = async (req) => {
     base: branch,
   });
 
-  return Response.json({
-    number: data.number,
-    head: data.head.ref,
-    url: data.html_url,
-  });
+  return Response.json(
+    {
+      number: data.number,
+      head: data.head.ref,
+      url: data.html_url,
+    },
+    { status: 200 }
+  );
 };
 
 export const DELETE = async (req) => {
@@ -53,6 +61,11 @@ export const DELETE = async (req) => {
   const repo = req.nextUrl.searchParams.get("repo");
   const url = req.nextUrl.searchParams.get("url");
   const branch = req.nextUrl.searchParams.get("branch");
+
+  if (!branch || !number || !workflow || !url || !branch) {
+    return Response.json({}, { status: 400 });
+  }
+
   const uuid = uuidv4().slice(0, 5);
 
   const { data: installation } = await app.octokit.request(
@@ -91,7 +104,7 @@ export const DELETE = async (req) => {
       base: branch,
     });
 
-    return Response.json(true);
+    return Response.json(true, { status: 200 });
   } catch (err) {
     octokit.rest.pulls.update({
       owner: "TreeHacks-Pipeline-Automation",
@@ -101,6 +114,6 @@ export const DELETE = async (req) => {
       body: `AUTOMATION WORKFLOW: ${workflow} is being closed due to a workflow deletion from GitFlow.`,
     });
 
-    return Response.json(false);
+    return Response.json(false, { status: 200 });
   }
 };
