@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as installations from "../installations.js";
 import type * as workflows from "../workflows.js";
 
 /**
@@ -25,6 +26,7 @@ import type * as workflows from "../workflows.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  installations: typeof installations;
   workflows: typeof workflows;
 }>;
 export declare const api: FilterApi<

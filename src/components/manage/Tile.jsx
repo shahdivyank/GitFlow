@@ -22,8 +22,15 @@ import { CustomAPI } from "@/lib/api";
 import { IoReload } from "react-icons/io5";
 import { MdLock, MdOutlinePublic } from "react-icons/md";
 import { toast } from "../ui/use-toast";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 const Tile = ({ repo, name, code }) => {
+  const workflows = useQuery(api.installations.getInstallations, {
+    repo: repo.name,
+    workflow: name,
+  });
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -65,9 +72,10 @@ const Tile = ({ repo, name, code }) => {
       </CardHeader>
       <CardFooter className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger disabled={repo.visibility === "private"}>
-            <Button disabled={repo.visibility === "private"}>
-              Install Workflow
+          <DialogTrigger disabled={repo.visibility === "private" || workflows}>
+            <Button disabled={repo.visibility === "private" || workflows}>
+              {!workflows && "Must be Public Repo"}
+              {workflows && "Already Installed"}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -106,7 +114,7 @@ const Tile = ({ repo, name, code }) => {
                     Please wait
                   </>
                 )}
-                {!loading && "Install Workflow"}
+                {!loading && !workflows && "Install Workflow"}
               </Button>
             </DialogFooter>
           </DialogContent>

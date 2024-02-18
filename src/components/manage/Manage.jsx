@@ -16,9 +16,11 @@ import { CustomAPI } from "@/lib/api";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Tile from "./Tile";
+import { FaCheck, FaCopy } from "react-icons/fa";
 
 const Manage = ({ params }) => {
   const [repos, setRepos] = useState(null);
+  const [copy, setCopy] = useState(false);
 
   useEffect(() => {
     CustomAPI({
@@ -44,6 +46,12 @@ const Manage = ({ params }) => {
     );
   }
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopy(true);
+    setTimeout(() => setCopy(false), 2000);
+  };
+
   const { name, description, environment, package_manager, type, tool, code } =
     workflow;
 
@@ -57,8 +65,8 @@ const Manage = ({ params }) => {
 
   return (
     <div className="flex p-8">
-      <div className="w-1/2 flex items-center justify-center h-screen">
-        <Card className="flex flex-col justify-between w-fit">
+      <div className="w-1/2 flex flex-col gap-4 items-start justify-start h-screen">
+        <Card className="flex flex-col justify-between w-fit border-0">
           <CardHeader>
             <CardTitle className="flex justify-between">
               {name}
@@ -78,10 +86,29 @@ const Manage = ({ params }) => {
             </div>
           </CardFooter>
         </Card>
+        <div className="w-full bg-slate-800 rounded p-8">
+          <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
+            {copy ? (
+              <FaCheck className="text-green-500" />
+            ) : (
+              <FaCopy onClick={handleCopy} />
+            )}
+          </div>
+
+          <code className="whitespace-pre-wrap">
+            <p className="text-slate-500">
+              .github/workflows/
+              {name.split(" ").join("_")}.yaml
+            </p>
+            {code}
+          </code>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-8">
         {repos &&
-          repos.map((repo) => <Tile repo={repo} name={name} code={code} />)}
+          repos.map((repo, index) => (
+            <Tile repo={repo} name={name} code={code} key={index} />
+          ))}
         {!repos && (
           <p className="flex items-center justify-center w-full text-4xl">
             Loading...
