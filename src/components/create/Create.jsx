@@ -11,6 +11,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { atomone } from "@uiw/codemirror-theme-atomone";
+import CodeMirror from "@uiw/react-codemirror";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -196,7 +198,7 @@ const Create = () => {
         </Form>
       </div>
       <div className="w-1/2 m-8 flex flex-col items-end justify-end">
-        <div className="w-full h-[90%] bg-slate-800 rounded p-8">
+        <div className="w-full h-[90%] bg-[#282C34] rounded p-8">
           <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
             {copy ? (
               <FaCheck className="text-green-500" />
@@ -210,7 +212,15 @@ const Create = () => {
               .github/workflows/
               {form.getValues().workflow_name.split(" ").join("_")}.yaml
             </p>
-            {data.code === "" ? "No Code Generated Just Yet!" : data.code}
+
+            <CodeMirror
+              value={
+                data.code === "" ? "No Code Generated Just Yet!" : data.code
+              }
+              onChange={(text) => setData({ ...data, code: text })}
+              theme={atomone}
+              // height="200px"
+            />
           </code>
         </div>
         <Button type="submit" className="my-2" onClick={onCreate}>
