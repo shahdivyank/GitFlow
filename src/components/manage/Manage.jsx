@@ -104,7 +104,7 @@ const Manage = ({ params }) => {
           </code>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-2 gap-8 p-8">
         {repos &&
           repos.map((repo, index) => (
             <Tile repo={repo} name={name} code={code} key={index} />
