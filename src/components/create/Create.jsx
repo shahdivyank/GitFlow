@@ -91,10 +91,7 @@ const Create = () => {
 
   return (
     <Protected>
-      <div className="mx-8">
-        <p className="text-3xl font-semibold my-1 text-center">
-          Create a New Workflow
-        </p>
+      <div className="mx-8 flex items-center">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
