@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { IoReload } from "react-icons/io5";
 
 const Workflows = () => {
   const workflows = useQuery(api.workflows.get);
@@ -12,8 +13,9 @@ const Workflows = () => {
   return (
     <Protected title="GitFlow | Workflows">
       {!workflows && (
-        <p className="flex items-center justify-center w-full text-4xl">
-          Loading...
+        <p className="flex flex-col items-center justify-center w-full text-4xl">
+          Loading
+          <IoReload className="mr-2 animate-spin text-3xl my-2" />
         </p>
       )}
 

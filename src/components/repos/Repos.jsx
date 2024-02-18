@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Protected from "../Protected";
 import { api } from "@/lib/api";
 import Repo from "./Repo";
+import { IoReload } from "react-icons/io5";
 
 const Repos = () => {
   const [repos, setRepos] = useState(null);
@@ -25,8 +26,9 @@ const Repos = () => {
       )}
 
       {!repos && (
-        <p className="flex items-center justify-center w-full text-4xl">
-          Loading...
+        <p className="flex flex-col items-center justify-center w-full text-4xl">
+          Loading
+          <IoReload className="mr-2 animate-spin text-3xl my-2" />
         </p>
       )}
     </Protected>

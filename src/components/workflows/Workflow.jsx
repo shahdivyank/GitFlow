@@ -96,7 +96,7 @@ const Workflow = ({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <div>
+        <div className="flex flex-wrap gap-1">
           <Badge variant="outline">{environment}</Badge>
           <Badge variant="outline">{package_manager}</Badge>
           <Badge variant="outline">{type}</Badge>
