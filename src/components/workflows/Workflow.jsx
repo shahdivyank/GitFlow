@@ -50,9 +50,9 @@ const Workflow = ({
       name,
     });
 
-    items.forEach(async ({ repo, workflow, number }) => {
+    items.forEach(async ({ repo, workflow, number, url, branch }) => {
       await CustomAPI({
-        url: `/api/pull-requests?repo=${repo}&workflow=${workflow}&number=${number}`,
+        url: `/api/pull-requests?repo=${repo}&workflow=${workflow}&number=${number}&url=${url}&branch=${branch}`,
         method: "DELETE",
       });
     });

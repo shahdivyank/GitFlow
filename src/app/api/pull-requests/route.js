@@ -20,11 +20,9 @@ export const POST = async (req) => {
 
   const octokit = await app.getInstallationOctokit(installation.id);
 
-  execSync(`mkdir files && cd files && git clone ${clone_url}`);
+  execSync(`mkdir -p files && cd files && git clone ${clone_url}`);
 
-  execSync(
-    `cd files/${repo} mkdir -p .github/workflows && cd .github/workflows`
-  );
+  execSync(`cd files/${repo} && mkdir -p .github/workflows`);
 
   execSync(`cd files/${repo}/.github/workflows && touch ${name}.yaml`);
 
@@ -57,16 +55,18 @@ export const POST = async (req) => {
 
 export const DELETE = async (req) => {
   const number = req.nextUrl.searchParams.get("number");
-  const workflow = req.nextUrl.searchParams.get("workflow");
+  const name = req.nextUrl.searchParams.get("workflow");
   const repo = req.nextUrl.searchParams.get("repo");
   const url = req.nextUrl.searchParams.get("url");
   const branch = req.nextUrl.searchParams.get("branch");
 
-  if (!branch || !number || !workflow || !url || !branch) {
+  if (!branch || !number || !name || !url || !branch) {
     return Response.json({}, { status: 400 });
   }
 
   const uuid = uuidv4().slice(0, 5);
+
+  const workflow = name.split(" ").join("_");
 
   const { data: installation } = await app.octokit.request(
     `GET /repos/TreeHacks-Pipeline-Automation/${repo}/installation`
@@ -83,9 +83,7 @@ export const DELETE = async (req) => {
 
     const clone_url = url.substring(0, url.indexOf("/pull"));
 
-    execSync(`mkdir files && cd files && git clone ${clone_url}`);
-
-    execSync(`cd files/${repo} && cd .github/workflows`);
+    execSync(`mkdir -p files && cd files && git clone ${clone_url}`);
 
     execSync(`cd files/${repo}/.github/workflows && rm ${workflow}.yaml`);
 
