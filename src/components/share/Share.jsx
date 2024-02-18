@@ -54,9 +54,9 @@ const Share = ({ params }) => {
   };
 
   return (
-    <div className="flex p-8">
+    <div className="flex flex-col md:flex-row p-2 md:p-8 h-screen">
       <title>GitFlow | Share</title>
-      <div className="w-1/2 flex items-center justify-center h-screen">
+      <div className="w-full md:w-1/2 flex items-center justify-center">
         <Card className="flex flex-col justify-between w-fit">
           <CardHeader>
             <CardTitle className="flex justify-between">
@@ -78,9 +78,9 @@ const Share = ({ params }) => {
           </CardFooter>
         </Card>
       </div>
-      <div className="w-1/2 flex items-center">
-        <div className="w-full bg-slate-800 rounded p-8">
-          <div className="w-full flex justify-end text-xl hover:cursor-pointer hover:opacity-50">
+      <div className="w-full md:w-1/2 flex items-center">
+        <div className="w-full bg-slate-800 rounded m-2 p-2 md:p-8">
+          <div className="w-full flex justify-end text-base md:text-xl hover:cursor-pointer hover:opacity-50">
             {copy ? (
               <FaCheck className="text-green-500" />
             ) : (
@@ -88,8 +88,8 @@ const Share = ({ params }) => {
             )}
           </div>
 
-          <code className="whitespace-pre-wrap">
-            <p className="text-slate-500">
+          <code className="whitespace-pre-wrap text-sm md:text-base">
+            <p className="text-slate-500 break-words">
               .github/workflows/
               {name.split(" ").join("_")}.yaml
             </p>
