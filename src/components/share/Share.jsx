@@ -55,6 +55,7 @@ const Share = ({ params }) => {
 
   return (
     <div className="flex p-8">
+      <title>GitFlow | Share</title>
       <div className="w-1/2 flex items-center justify-center h-screen">
         <Card className="flex flex-col justify-between w-fit">
           <CardHeader>

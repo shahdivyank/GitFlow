@@ -15,7 +15,7 @@ const Repos = () => {
   }, []);
 
   return (
-    <Protected>
+    <Protected title="GitFlow | Repos">
       {repos && (
         <div className="grid grid-cols-4 w-full h-fit gap-8 p-8">
           {repos.map((repo) => (

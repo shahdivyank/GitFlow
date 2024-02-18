@@ -103,7 +103,7 @@ const Create = () => {
   };
 
   return (
-    <Protected>
+    <Protected title="GitFlow | Create">
       <div className="mx-8 flex items-center">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

@@ -65,7 +65,7 @@ const Manage = ({ params }) => {
   };
 
   return (
-    <Protected>
+    <Protected title="GitFlow | Manage">
       <div className="flex p-8">
         <div className="w-1/2 flex flex-col gap-4 items-start justify-start h-screen">
           <Card className="flex flex-col justify-between w-fit border-0">

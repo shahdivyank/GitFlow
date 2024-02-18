@@ -10,7 +10,7 @@ const Workflows = () => {
   const workflows = useQuery(api.workflows.get);
 
   return (
-    <Protected>
+    <Protected title="GitFlow | Workflows">
       {!workflows && (
         <p className="flex items-center justify-center w-full text-4xl">
           Loading...
