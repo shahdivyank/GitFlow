@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import Tile from "./Tile";
 import { FaCheck, FaCopy } from "react-icons/fa";
 import Protected from "../Protected";
+import { IoReload } from "react-icons/io5";
 
 const Manage = ({ params }) => {
   const [repos, setRepos] = useState(null);
@@ -66,7 +67,7 @@ const Manage = ({ params }) => {
 
   return (
     <Protected title="GitFlow | Manage">
-      <div className="flex p-8">
+      <div className="flex p-8 w-full">
         <div className="w-1/2 flex flex-col gap-4 items-start justify-start h-screen">
           <Card className="flex flex-col justify-between w-fit border-0">
             <CardHeader>
@@ -111,12 +112,13 @@ const Manage = ({ params }) => {
             repos.map((repo, index) => (
               <Tile repo={repo} name={name} code={code} key={index} />
             ))}
-          {!repos && (
-            <p className="flex items-center justify-center w-full text-4xl">
-              Loading...
-            </p>
-          )}
         </div>
+        {!repos && (
+          <p className="flex flex-col items-center justify-center w-full text-4xl">
+            Loading
+            <IoReload className="mr-2 animate-spin text-3xl my-2" />
+          </p>
+        )}
       </div>
     </Protected>
   );

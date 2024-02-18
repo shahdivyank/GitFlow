@@ -80,12 +80,19 @@ const Create = () => {
     });
 
     setData({
-      ...data,
-      code,
+      workflow_name,
+      description,
+      environment,
+      type,
+      tool,
+      package_manager,
+      code: code,
     });
   };
 
   const onCreate = async () => {
+    console.log(data);
+
     await createWorkflow({
       ...data,
     });
