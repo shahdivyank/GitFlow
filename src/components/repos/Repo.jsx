@@ -21,6 +21,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const icons = {
   public: <MdOutlinePublic className="text-xl mx-2" />,
@@ -36,6 +39,7 @@ const Repo = ({
   visibility,
   stargazers_count,
   description,
+  clone_url,
 }) => {
   const workflows = useQuery(api.installations.getRepos, {
     repo: name,
@@ -44,8 +48,13 @@ const Repo = ({
   return (
     <Card className="flex flex-col justify-between">
       <CardHeader>
-        <CardTitle className="flex justify-between">
-          {name}
+        <CardTitle className="flex justify-between items-center">
+          <Link href={clone_url} target="_blank">
+            <Button variant="link" className="text-xl p-0 m-0">
+              {name}
+              <FaExternalLinkAlt className="mx-2 text-base" />
+            </Button>
+          </Link>
           <div className="flex">
             {stargazers_count} {icons["stars"]}
           </div>
