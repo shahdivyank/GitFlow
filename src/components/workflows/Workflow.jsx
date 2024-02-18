@@ -67,7 +67,7 @@ const Workflow = ({
         <CardTitle className="flex justify-between">
           <Link
             target="_blank"
-            href={`/share/${_id}`}
+            href={`/manage/${_id}`}
             className="hover:underline"
           >
             {name}
