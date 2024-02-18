@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FaCode, FaTrashAlt } from "react-icons/fa";
+import { IoMdShare } from "react-icons/io";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const Workflow = ({
   _id,
@@ -38,19 +40,35 @@ const Workflow = ({
     await deleteWorkflow({
       id: _id,
     });
+    toast({
+      title: "Deleted",
+      variant: "destructive",
+      description: `${name} is permanently deleted.`,
+    });
     setOpen(false);
   };
 
   const [open, setOpen] = useState(false);
+
+  const { toast } = useToast();
+
+  const handleSelect = () => {
+    toast({
+      title: "Copied to Clipboard",
+      description: `${name} is copied and now shareable!`,
+    });
+    navigator.clipboard.writeText(`localhost:3000/view/${_id}`);
+  };
 
   return (
     <Card className="flex flex-col justify-between">
       <CardHeader>
         <CardTitle className="flex justify-between">
           {name}
-          <div className="flex">
-            {count} <FaCode className="mx-2" />
-          </div>
+          <IoMdShare
+            className="hover:cursor-pointer hover:opacity-75"
+            onClick={handleSelect}
+          />
         </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
@@ -61,6 +79,12 @@ const Workflow = ({
           <Badge variant="outline">{type}</Badge>
           <Badge variant="outline">{tool}</Badge>
         </div>
+      </CardFooter>
+      <CardFooter className="flex justify-between">
+        <CardDescription className="flex items-center">
+          Used by <span className="font-semibold mx-2 text-lg">{count}</span>
+          repositories
+        </CardDescription>
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger>

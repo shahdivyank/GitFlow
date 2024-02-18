@@ -94,6 +94,7 @@ const Create = () => {
                   </FormControl>
                   <FormDescription>
                     This is how you can reference your workflow in the future.
+                    You cannot change this name later on!
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
